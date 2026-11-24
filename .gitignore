@@ -1,0 +1,49 @@
+# === Data (private test material) ===
+data/
+*.pdf
+*.cbz
+*.cbr
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# === Node / Frontend ===
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/public/scenes/
+.turbo/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Models / large files ===
+*.pt
+*.pth
+*.onnx
+*.safetensors
+models/
+
+# === Misc ===
+.env
+.env.local
+*.log

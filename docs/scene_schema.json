@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mangavrse.dev/schemas/scene.v1.json",
+  "title": "MangaVrse Scene Schema",
+  "description": "Schema for assembled 2.5D manga panel scenes",
+  "type": "object",
+  "required": ["version", "panel", "layers", "camera"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["1.0"]
+    },
+    "panel": {
+      "type": "object",
+      "required": ["project", "page", "panel", "source", "width", "height"],
+      "properties": {
+        "project": { "type": "string" },
+        "page": { "type": "integer", "minimum": 0 },
+        "panel": { "type": "integer", "minimum": 0 },
+        "source": { "type": "string" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "camera": {
+      "type": "object",
+      "required": ["fov", "near", "far", "position"],
+      "properties": {
+        "fov": { "type": "number", "minimum": 10, "maximum": 120 },
+        "near": { "type": "number", "minimum": 0.01 },
+        "far": { "type": "number", "minimum": 1.0 },
+        "position": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "minDistance": { "type": "number", "minimum": 0.1 },
+            "maxDistance": { "type": "number", "minimum": 0.5 },
+            "maxPitch": { "type": "number", "minimum": 0.0 },
+            "maxYaw": { "type": "number", "minimum": 0.0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "parentId",
+          "svgPath",
+          "pngPath",
+          "color",
+          "depth",
+          "zOrder",
+          "transform"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["background", "character", "character_part", "speech_bubble", "sfx", "foreground", "effect", "prop", "environment"]
+          },
+          "parentId": {
+            "type": ["string", "null"]
+          },
+          "svgPath": { "type": "string" },
+          "pngPath": { "type": "string" },
+          "color": { "type": "string" },
+          "depth": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "zOrder": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "transform": {
+            "type": "object",
+            "required": ["x", "y", "scaleX", "scaleY", "rotation"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "scaleX": { "type": "number" },
+              "scaleY": { "type": "number" },
+              "rotation": { "type": "number" }
+            },
+            "additionalProperties": false
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "part": { "type": ["string", "null"] },
+              "confidence": { "type": "number" },
+              "model_depth": { "type": "number" },
+              "prior_depth": { "type": "number" },
+              "is_override": { "type": "boolean" },
+              "bbox": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "animations": {
+                "type": "object",
+                "properties": {
+                  "sway": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": { "type": "boolean" },
+                      "speed": { "type": "number" },
+                      "amplitude": { "type": "number" }
+                    },
+                    "additionalProperties": false
+                  },
+                  "float": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": { "type": "boolean" },
+                      "speed": { "type": "number" },
+                      "amplitude": { "type": "number" }
+                    },
+                    "additionalProperties": false
+                  },
+                  "blink": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": { "type": "boolean" },
+                      "interval": { "type": "number" }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

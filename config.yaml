@@ -1,0 +1,151 @@
+# ============================================================
+# MangaVrse — Single source of truth for all configuration
+# ============================================================
+
+project:
+  name: mangavrse
+  version: "0.1.0"
+  data_dir: data/
+
+# ----- Device --------------------------------------------------
+device:
+  prefer_cuda: true
+  fallback_cpu: true
+
+# ----- Model providers (swap by changing 'name') ---------------
+models:
+  panel_detector:
+    name: yolov8
+    provider: ultralytics
+    weights: null           # path or HF repo; null = download default
+    threshold: 0.5
+
+  depth_estimator:
+    name: depth_anything_v2
+    provider: depth_anything
+    weights: null
+    output_format: png16
+
+  segmenter:
+    name: sam2_hiera_large
+    provider: meta
+    weights: null
+    points_per_side: 32
+
+  vectorizer:
+    name: potrace
+    provider: builtin
+    threshold: 128
+
+# ----- Depth defaults ------------------------------------------
+depth:
+  near: 0.1
+  far: 10.0
+  default_layers: 5
+  model_weight: 0.50
+  bilateral_d: 7
+  bilateral_sigma: 50.0
+  smooth_sigma: 1.5
+
+# ----- Paths (relative to project root) ------------------------
+paths:
+  uploads: data/uploads
+  output: data/output
+  models_cache: data/models
+
+# ----- Enhance stage -------------------------------------------
+enhance:
+  enabled_steps:
+    contrast: true
+    denoise: true
+    deblur: true
+    upscale: true
+    sharpen: true
+
+  contrast:
+    method: percentile_stretch    # percentile_stretch | clahe
+    paper_white_percentile: 99.0
+    ink_black_percentile: 1.0
+
+  denoise:
+    method: nlmeans               # nlmeans | bilateral
+    h: 3.0
+    preserve_screentone: true
+    screentone_threshold: 0.12
+
+  deblur:
+    radius: 1.0
+    amount: 0.6
+
+  upscale:
+    scale: 4                      # 2 or 4
+    model_name: realesrgan_anime6b
+    tile_size: 512
+    tile_pad: 32
+
+  sharpen:
+    amount: 0.7
+    radius: 0.8
+
+# ----- Vectorize stage -----------------------------------------
+vectorize:
+  extractor:
+    adaptive_block_size: 15
+    adaptive_c: 8
+    screentone_separation: true
+    min_tone_frequency: 0.12
+
+  tracer:
+    provider: potrace
+    turdsize: 2
+    alphamax: 1.0
+    opttolerance: 0.8
+
+  optimizer:
+    min_path_area: 12.0
+    rdp_tolerance: 1.2
+    smooth_bezier: true
+    merge_distance: 2.0
+
+  screentone:
+    mode: pattern_fill            # pattern_fill | raster_overlay
+    default_dot_size: 2.0
+    default_spacing: 5.0
+
+# ----- Segment stage -------------------------------------------
+segment:
+  model_name: sam2_hiera_large
+  points_per_side: 32
+  pred_iou_thresh: 0.75
+  stability_score_thresh: 0.85
+  min_mask_region_area: 120
+  screentone_smoothing: true
+  bubble_detection: true
+  line_snapping: true
+  confidence_threshold: 0.65
+
+# ----- Layers stage --------------------------------------------
+layers:
+  mask_padding: 2               # pixels to dilate mask to avoid edge halos
+  feather_radius: 2.0           # Gaussian sigma for alpha anti-aliasing
+  inpainting:
+    provider: default
+    method: telea_texture       # telea_texture | ns_manga
+    radius: 5
+    line_extension: true
+    screentone_synthesis: true
+  parallax_test:
+    shift_scale: 25.0           # max pixel displacement for test render
+    angle_degrees: -30.0        # directional angle of camera parallax
+
+# ----- Colorize stage ------------------------------------------
+colorize:
+  character_id: char_001
+  palette_path: null            # optional external palette.json path
+  overrides: {}                 # per-layer manual color overrides {layer_id: "#HEX"}
+
+# ----- Server ---------------------------------------------------
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true

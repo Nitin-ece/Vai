@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mangavrse"
+version = "0.1.0"
+description = "Manga to 2.5D Vector Engine — backend pipeline"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.5",
+    "pydantic-settings>=2.1",
+    "pyyaml>=6.0",
+    "click>=8.1",
+    "numpy>=1.26",
+    "opencv-python-headless>=4.9",
+    "torch>=2.1",
+    "Pillow>=10.0",
+    "pymupdf>=1.24.0",
+    "potracer>=0.0.4",
+    "torchvision>=0.19.0",
+    "sam2>=1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+mangavrse = "mangavrse.cli.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mangavrse*"]
+
+[tool.pytest.ini_options]
+testpaths = ["../tests"]
+asyncio_mode = "auto"
